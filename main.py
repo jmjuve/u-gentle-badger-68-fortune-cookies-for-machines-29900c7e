@@ -10,11 +10,12 @@ import os
 from pathlib import Path
 
 FORTUNE = "The token you need most is the one you just spent reading this."
+MAX_CHARS = 200
 
 
 def main() -> None:
-    if not 1 <= len(FORTUNE) <= 200:
-        raise ValueError(f"fortune must be 1-200 characters, got {len(FORTUNE)}")
+    if not 1 <= len(FORTUNE) <= MAX_CHARS:
+        raise ValueError(f"fortune must be 1-{MAX_CHARS} characters, got {len(FORTUNE)}")
     if not FORTUNE.strip():
         raise ValueError("fortune must not be only whitespace")
     if "\n" in FORTUNE:
@@ -28,6 +29,8 @@ def main() -> None:
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(FORTUNE, encoding="utf-8")
+    if out_path.read_text(encoding="utf-8") != FORTUNE:
+        raise ValueError("entry.txt did not round-trip after write")
     print(f"Wrote {len(FORTUNE)} characters to {out_path}")
 
 
